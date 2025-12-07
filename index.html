@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الوداد الرياضي - الإحصائيات الشاملة</title>
+<style>
+    /* =========================================
+       1. CSS STYLES (التصميم)
+       ========================================= */
+    body { margin: 0; padding: 0; background: #f9f9f9; }
+    
+    #elbotolaon-widget-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #fff;
+        color: #333;
+        direction: rtl;
+        text-align: right;
+        font-size: 16px;
+        line-height: 1.6;
+        width: 100%;
+        max-width: 800px; /* عرض مناسب للمحتوى */
+        margin: 20px auto;
+        box-sizing: border-box;
+        box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        border-radius: 8px;
+        padding: 10px;
+    }
+    #elbotolaon-widget-container * { box-sizing: border-box; }
+    #elbotolaon-widget-container img { max-width: 100%; vertical-align: middle; }
+
+    /* العناوين والأقسام */
+    .eb-section { margin-bottom: 25px; border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; }
+    .eb-header { padding: 15px 20px; border-bottom: 2px solid #f5f5f5; display: flex; align-items: center; justify-content: space-between; }
+    .eb-title { font-size: 20px; font-weight: 700; border-right: 5px solid #d2151e; padding-right: 12px; margin: 0; color: #333; }
+
+    /* الهيدر الرئيسي (معلومات الفريق) */
+    .eb-team-header { padding: 25px; display: flex; align-items: center; gap: 20px; background: #fdfdfd; flex-wrap: wrap; border-bottom: 1px solid #eee; }
+    .eb-team-logo { width: 90px; height: 90px; object-fit: contain; }
+    
+    /* جدول الترتيب */
+    .eb-ranking-scroll { width: 100%; overflow-x: auto; }
+    table.ranking-table { width: 100%; border-collapse: collapse; margin: 0; min-width: 600px; }
+    table.ranking-table th { background: #f8f8f8; color: #555; font-weight: 700; padding: 12px 5px; text-align: center; font-size: 14px; border-bottom: 2px solid #eee; }
+    table.ranking-table td { padding: 10px 5px; text-align: center; border-bottom: 1px solid #f0f0f0; font-size: 15px; white-space: nowrap; }
+    
+    .col-team { text-align: right !important; width: 40%; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+    .col-team img { width: 24px; height: 24px; }
+    .rank-badge { display: inline-flex; justify-content: center; align-items: center; width: 24px; height: 24px; border-radius: 50%; color: #fff; font-size: 12px; background: #ccc; }
+    .rank-1, .rank-2 { background: #28a745; } .rank-3 { background: #007bff; } .rank-15, .rank-16 { background: #dc3545; }
+    .points-cell { font-weight: 800; background: #f9f9f9; color: #d2151e; }
+
+    /* جدول المباريات */
+    .eb-schedule-header { padding: 15px; background: #f8f8f8; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    .eb-select { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+    .match-row { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #f5f5f5; flex-wrap: wrap; }
+    .m-date { width: 70px; font-size: 12px; color: #777; font-weight: bold; text-align: center; border-left: 1px solid #eee; margin-left: 10px; }
+    .m-info { flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; min-width: 200px; }
+    .m-team { width: 35%; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+    .m-team.away { justify-content: flex-end; flex-direction: row-reverse; }
+    .m-team img { width: 26px; height: 26px; }
+    .m-res { background: #eee; padding: 4px 12px; border-radius: 15px; font-weight: bold; font-size: 14px; }
+    .m-stadium { font-size: 11px; color: #888; background: #f9f9f9; padding: 3px 8px; border-radius: 4px; white-space: nowrap; margin-top: 5px; }
+
+    /* شبكة اللاعبين */
+    .eb-squad-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px; }
+    .squad-card { border: 1px solid #eee; border-radius: 8px; background: #fff; cursor: pointer; transition: 0.2s; overflow: hidden; }
+    .squad-card:hover { border-color: #d2151e; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .card-main { display: flex; align-items: center; padding: 12px; gap: 10px; }
+    .card-main img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #f0f0f0; }
+    .card-txt h4 { margin: 0; font-size: 14px; font-weight: 700; color: #333; }
+    .card-txt p { margin: 2px 0 0; font-size: 12px; color: #888; }
+    
+    /* جدول الانتقالات */
+    .transfers-scroll { overflow-x: auto; width: 100%; }
+    .transfers-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+    .transfers-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+    .transfers-table thead td { background: #fcfcfc; font-weight: bold; color: #666; font-size: 13px; }
+    .t-player img, .t-club img { width: 24px; height: 24px; vertical-align: middle; margin-left: 5px; border-radius: 50%; }
+    .t-type { color: #28a745; font-weight: bold; font-size: 12px; }
+
+    /* الموبايل */
+    @media (max-width: 768px) {
+        .hide-on-mobile { display: none !important; }
+        .col-team { width: 60% !important; }
+        .m-stadium { display: none; }
+        .eb-team-header { justify-content: center; text-align: center; }
+    }
+</style>
+</head>
+<body>
+
+<div id="elbotolaon-widget-container">
+
+    <!-- 1. معلومات الفريق -->
+    <div class="eb-section">
+        <div class="eb-team-header">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiY5x7sLNOVCth8x7gfRCsazVQ4Oa5dROJJK5qpTRan8ai0sgwG6KYrbtEGwIvVrl0_i-lQ2zo4HWMQnqQaUx5qwVMQhNRrCNE6W_8lo_NAAS6USi_JQj1qxBXZH4RakVNSQt7RFFLyFjX4t6qRIBinU_0bkPBLF5s4J-BCeIS4rFg0wiE4_WEFK5_Ibb0/s1600/wida%20elbotolaon.png" class="eb-team-logo" alt="Wydad">
+            <div>
+                <h1 style="margin:0 0 5px; color:#d2151e; font-size:28px;">الوداد الرياضي</h1>
+                <p style="margin:0; color:#666; font-size:14px;">موسم 2024-2025 | البطولة الاحترافية</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. الترتيب العام -->
+    <div class="eb-section">
+        <div class="eb-header"><h3 class="eb-title">الترتيب العام</h3></div>
+        <div class="eb-ranking-scroll" id="standingsContainer">
+            <!-- سيتم ملؤه بواسطة JS -->
+            <div style="padding:20px; text-align:center;">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <!-- 3. جدول المباريات -->
+    <div class="eb-section">
+        <div class="eb-schedule-header">
+            <h3 class="eb-title">المباريات</h3>
+            <select id="roundSelect" class="eb-select" onchange="loadRound(this.value)">
+                <option value="1">الجولة 1</option>
+                <option value="2">الجولة 2</option>
+                <option value="3">الجولة 3</option>
+                <option value="4">الجولة 4</option>
+                <option value="5">الجولة 5</option>
+                <option value="6">الجولة 6</option>
+                <option value="7">الجولة 7</option>
+                <option value="8" selected>الجولة 8</option>
+            </select>
+        </div>
+        <div id="matchesContainer">
+            <!-- سيتم ملؤه بواسطة JS -->
+        </div>
+    </div>
+
+    <!-- 4. التشكيلة -->
+    <div class="eb-section">
+        <div class="eb-header"><h3 class="eb-title">قائمة اللاعبين</h3></div>
+        <div class="eb-squad-grid" id="squadContainer">
+            <!-- سيتم ملؤه بواسطة JS -->
+        </div>
+    </div>
+
+    <!-- 5. الانتقالات -->
+    <div class="eb-section">
+        <div class="eb-header"><h3 class="eb-title">أحدث الانتقالات</h3></div>
+        <div class="transfers-scroll" id="transfersContainer">
+            <!-- سيتم ملؤه بواسطة JS -->
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================================
+     2. JAVASCRIPT LOGIC (البرمجة والبيانات)
+     ========================================= -->
+<script>
+// --- 1. البيانات ---
+const squadData = [
+    {n:"يوسف المطيع", p:"حارس مرمى", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgUo4dkktTOZdj0bbqu-XI4gdOIkckaLF37Yb6JCLgNcXB2nAfNDJzTZnz0ulQ87JnBLvM5JFO0CQ1rp51MWoAqcGVZalI9yqv_9zNBWpcUJhWlppWWxC2nqCQUE-gxq8-DD9f9C-jnBWdB-Nu4z1JOPjVwgQf8yLsYN8p85zflqRQe7M7mxe0bbPq0lV0/s1600/%D9%8A%D9%88%D8%B3%D9%81%20%D8%A7%D9%84%D9%85%D8%B7%D9%8A%D8%B9.png"},
+    {n:"عبد العالي المحمدي", p:"حارس مرمى", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjTX9RTHz61FreoTcdlilvb2h-pncWoJ70msZtsuVDNKBd44pD6grL0lpf9LdZ15L_HfwTQTBfD_4jT2mS7R3imC5czEEyTlkXtREcAUZvYkQDKweUXrk89BiInp69yPcsDMZS6F1IQ1sOzeZ5-VaKriQgl34yT93IXOEQGPNeFWmTe1PigVTq2SUaksk/s1600/%D8%B9%D8%A8%D8%AF%20%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%8A%20%D8%A7%D9%84%D9%85%D8%AD%D9%85%D8%AF%D9%8A.png"},
+    {n:"جمال حركاس", p:"مدافع", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9hI0cgifqm8HVEcqRPNZ0oPb-KCxxvddot29oJiV0hkx43E6eoAp_gdpNx6PDA78Gv2TvCcBB4j9ooVlCr59EjmRT45KW3OPzv-fb4tXgXdJ0QU-QCvfNo9ut_nWelIBKQiOohZuBvyndojHDFObYtrkPb98fESOQvfVYGS1gBgQZAmh2dhaU7jpyK_4/s1600/default-player.png"},
+    {n:"أيمن ديراني", p:"مدافع", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhl2GoNGSTZoKbK8uOMtJGA95_l10A6FVaELY6nYfL41GntKu8zNaDdFFpKq6QdoS1TuAznMJE9qJNq_8rDCQu9yGC_-UvHp4NIup7z1AQaTQJ6lxNnc15xcwUVE1UyHxBraGP2Z1Zht87v4eVJoi1eYGYdeFC8jYTWqzLWUzBxUIbv3gZdHFDG7z4K_kI/s1600/%D8%A7%D9%94%D9%8A%D9%85%D9%86%20%D8%AF%D8%A7%D9%8A%D8%B1%D8%A7%D9%86%D9%8A.png"},
+    {n:"محمد مفيد", p:"مدافع أيمن", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEidaZpqymNDEyQTp5GQ9i7nOp1-hp3hyphenhyphenCZAO7sSJ4oSrQAyUqJgrcbBRTdJSOC3sw_laHKtde1EynCzeBqLDZ5l9DpxB-1K9qtlJew-3jnVnq4L8T-6NwSLet5FV39N081wJwdg-fITlFu9PeXrDYqDCSYB0gRpJZGvE_KVQoL0yHzKFBjMLtr-htE0JvY/s1600/%D9%85%D8%AD%D9%85%D8%AF%20%D9%85%D9%81%D9%8A%D8%AF.png"},
+    {n:"أسامة الزمراوي", p:"وسط ميدان", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgbukgFSTjokLs4WoTGLcULMEeNqeZ2TUTZ9T6c977nUoFrty4ncmmsPrGZz0AFO0_KH8ivMuzogdUaaoTERy-_XEXg3Wj9cztFCqBE3IOb0gKDyU5NKsKvcjM2FVNwFqxHbyfBm45eLyKtOMvvvKZvEe0HQqtJDttv0LHs4TwJGBGsNMTwF3bYBkx2qsM/s1600/%D8%A7%D9%94%D8%B3%D8%A7%D9%85%D8%A9%20%D8%A7%D9%84%D8%B2%D9%85%D8%B1%D8%A7%D9%88%D9%8A.png"},
+    {n:"وليد ناسي", p:"مهاجم", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg-nX1H0ZgZb-8NOODz3N1N9a0nxO37oZPbTzdTN6PhaY6RmXwRbJNHd7H6QFo-yO-I0FQgZuQL0fCY3n5IYlyEbB3EJOTWQLeqdip3bSq3lgre6I08PDrp01KeyTLacJhUvjRbj6vXyid_1_EbiCx6D4z8v7RvGMsNUPA9ddNZKc-rxe9zTmjDZ6bTNGY/s1600/%D9%88%D9%84%D9%8A%D8%AF%20%D9%86%D8%A7%D8%B3%D9%8A.png"},
+    {n:"مباي نيانغ", p:"مهاجم", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9hI0cgifqm8HVEcqRPNZ0oPb-KCxxvddot29oJiV0hkx43E6eoAp_gdpNx6PDA78Gv2TvCcBB4j9ooVlCr59EjmRT45KW3OPzv-fb4tXgXdJ0QU-QCvfNo9ut_nWelIBKQiOohZuBvyndojHDFObYtrkPb98fESOQvfVYGS1gBgQZAmh2dhaU7jpyK_4/s1600/default-player.png"}
+];
+
+const roundsDB = {
+    1: [{d:"12/09", t:"20:00", t1:"الوداد", s:"1-0", t2:"الكوكب", std:"ملعب العربي الزاولي"}],
+    5: [{d:"29/10", t:"20:00", t1:"الوداد", s:"0-0", t2:"الرجاء", std:"ملعب العربي الزاولي"}],
+    8: [{d:"09/11", t:"16:00", t1:"آسفي", s:"1-2", t2:"الوداد", std:"ملعب المسيرة"}]
+};
+
+const standingsData = [
+    {rank:1, team:"الوداد الرياضي", p:8, w:6, d:2, l:0, gf:14, ga:5, diff:"+9", pts:20},
+    {rank:2, team:"الجيش الملكي", p:8, w:5, d:3, l:0, gf:14, ga:1, diff:"+13", pts:18},
+    {rank:3, team:"المغرب الفاسي", p:8, w:4, d:4, l:0, gf:11, ga:2, diff:"+9", pts:16},
+    {rank:4, team:"الرجاء الرياضي", p:7, w:4, d:3, l:0, gf:7, ga:1, diff:"+6", pts:15},
+    {rank:5, team:"النادي المكناسي", p:8, w:3, d:3, l:2, gf:6, ga:6, diff:"0", pts:12}
+];
+
+const transfersData = [
+    {date:"23-11", pName:"زاكارياس غيلان", from:"نهضة الزمامرة", to:"الوداد", type:"انتقال"},
+    {date:"23-11", pName:"حكيم زياش", from:"حر", to:"الوداد", type:"حر"}
+];
+
+// --- 2. دوال التشغيل ---
+function renderSquad() {
+    const container = document.getElementById('squadContainer');
+    let html = '';
+    squadData.forEach(p => {
+        html += `
+        <div class="squad-card">
+            <div class="card-main">
+                <img src="${p.img}" onerror="this.src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj-EzE0Owo0Hd2FH_5b-r4S2QgUPkcwSRIKWbh5NaOrTsjk8-6LNGaodij3NWQDwEFkCj5lPq1VQgcmkPiAPJoR8fDa3uy63vfUMqpxDhjsJ6Af-tvERImqG74tN8Y7fsb2GF-Om1m1iN_dStI116FFzeOFKm07NkhzZH56m1hvMgc4n_lLih9wusqB71o/s1600/blank.gif'">
+                <div class="card-txt"><h4>${p.n}</h4><p>${p.p}</p></div>
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function renderStandings() {
+    const container = document.getElementById('standingsContainer');
+    let html = '<table class="ranking-table"><thead><tr><th>#</th><th>الفريق</th><th>لعب</th><th class="hide-on-mobile">ن</th></tr></thead><tbody>';
+    standingsData.forEach(t => {
+        let bg = t.rank === 1 ? 'style="background:#e6ffe6;"' : '';
+        html += `<tr ${bg}>
+            <td><span class="rank-badge rank-${t.rank}">${t.rank}</span></td>
+            <td class="col-team">${t.team}</td>
+            <td>${t.p}</td>
+            <td class="points-cell">${t.pts}</td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+}
+
+function loadRound(rid) {
+    const box = document.getElementById('matchesContainer');
+    const matches = roundsDB[rid] || [];
+    let html = '';
+    matches.forEach(m => {
+        html += `
+        <div class="match-row">
+            <div class="m-date">${m.d}<br>${m.t}</div>
+            <div class="m-info">
+                <div class="m-team">${m.t1}</div>
+                <div class="m-res">${m.s}</div>
+                <div class="m-team away">${m.t2}</div>
+            </div>
+            <div class="m-stadium">${m.std}</div>
+        </div>`;
+    });
+    if(matches.length===0) html = '<div style="padding:20px;text-align:center;color:#999;">لا مباريات</div>';
+    box.innerHTML = html;
+}
+
+function renderTransfers() {
+    const box = document.getElementById('transfersContainer');
+    let html = '<table class="transfers-table"><thead><tr><td>التاريخ</td><td>اللاعب</td><td>من</td><td>إلى</td></tr></thead><tbody>';
+    transfersData.forEach(t => {
+        html += `<tr><td>${t.date}</td><td>${t.pName}</td><td>${t.from}</td><td>${t.to}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    box.innerHTML = html;
+}
+
+// تشغيل عند التحميل
+document.addEventListener('DOMContentLoaded', () => {
+    renderSquad();
+    renderStandings();
+    renderTransfers();
+    loadRound(8);
+});
+</script>
+
+</body>
+</html>
